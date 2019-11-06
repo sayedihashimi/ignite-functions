@@ -51,8 +51,8 @@
                     <div class="col-sm">
                         <hr />
                         <div>
-                            <div style="display: inline-block; padding-left: 12px;">
-                                    <input style="display:inline" @change="updateToDo(message)" type="checkbox" id="message.Id" v-model="message.isComplete">
+                            <div style="padding-left: 12px;">
+                                    <input @change="updateToDo(message)" type="checkbox" id="message.Id" v-model="message.isComplete">
                                     {{ message.name }}
                             </div>
                         </div>
@@ -119,12 +119,14 @@
         function updateToDo(toDo) {
             return axios.put(`/api/todo/update`, toDo)
                 .then(resp => {
-                    
+                    //data.messages = resp.data;
+                    newTodo();
                 });
         }
         function newTodo() {
             return axios.get(`/api/todo/item`)
                 .then(resp => {
+                    messages = null;
                     data.messages = resp.data;
                 });
         }

@@ -42,7 +42,11 @@ namespace SignalRServerless
         [FunctionName("todoItems")]
         public static IActionResult TodoItems(
             [HttpTrigger(AuthorizationLevel.Anonymous, "GET", Route = "todo/item")]HttpRequest req,
-            [CosmosDB(databaseName: DatabaseName, collectionName: CollectionName, ConnectionStringSetting = CosmosDbSetting, SqlQuery = "SELECT * FROM c ORDER BY c._ts desc", CreateIfNotExists = true)]IEnumerable<TodoItem> todoItems)
+            [CosmosDB(databaseName: DatabaseName,
+                        collectionName: CollectionName,
+                        ConnectionStringSetting = CosmosDbSetting,
+                        SqlQuery = "SELECT * FROM c ORDER BY c._ts desc",
+                        CreateIfNotExists = true)]IEnumerable<TodoItem> todoItems)
         {
             if (todoItems == null)
             {
@@ -95,7 +99,11 @@ namespace SignalRServerless
         /// </summary>
         [FunctionName("CosmosTrigger")]
         public static async Task Run(
-            [CosmosDBTrigger(databaseName: DatabaseName, collectionName: CollectionName, ConnectionStringSetting = CosmosDbSetting, CreateLeaseCollectionIfNotExists = true)]IReadOnlyList<Document> documents,
+            [CosmosDBTrigger(databaseName: DatabaseName,
+                                collectionName: CollectionName,
+                                ConnectionStringSetting = CosmosDbSetting,
+                                CreateLeaseCollectionIfNotExists = true)]
+            IReadOnlyList<Document> documents,
             [SignalR(HubName = HubName)]IAsyncCollector<SignalRMessage> signalRMessages)
         {
             if (documents != null && documents.Count > 0)
@@ -104,8 +112,7 @@ namespace SignalRServerless
                 {
                     var todoItem = JsonConvert.DeserializeObject<TodoItem>(document.ToString());
 
-                    await signalRMessages.AddAsync(new SignalRMessage
-                    {
+                    await signalRMessages.AddAsync(new SignalRMessage {
                         // The target has to match the target that is listed on all clients
                         Target = "todoItemsChanged",
                         Arguments = new[] { todoItem }
