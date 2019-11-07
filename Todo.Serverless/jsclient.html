@@ -96,7 +96,7 @@
                 .configureLogging(signalR.LogLevel.Debug)
                 .build();
 
-            data.connection.on('todoItemsChanged', newTodo);
+            data.connection.on('todoItemsChanged', getAllTodos);
             data.connection.onclose(() => console.log('disconnected'));
 
             data.connection.start({ withCredentials: false })
@@ -105,7 +105,7 @@
 
             data.messages = [];
 
-            newTodo();
+            getAllTodos();
         }
         function sendMessage(todoName, todoComplete) {
             return axios.post(`/api/todo/add`, {
@@ -119,10 +119,10 @@
             return axios.put(`/api/todo/update`, toDo)
                 .then(resp => {
                     //data.messages = resp.data;
-                    newTodo();
+                    getAllTodos();
                 });
         }
-        function newTodo() {
+        function getAllTodos() {
             return axios.get(`/api/todo/item`)
                 .then(resp => {
                     messages = null;
