@@ -88,7 +88,9 @@ namespace SignalRServerless
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "todo/add")] HttpRequest req)
         {
             var itemToAdd = Deserialize<TodoItem>(req.Body);
-
+            if (string.IsNullOrWhiteSpace(itemToAdd.Id)) {
+                itemToAdd.Id = Guid.NewGuid().ToString();
+            }
             await todoItems.AddAsync(itemToAdd);
 
             return new NoContentResult();
